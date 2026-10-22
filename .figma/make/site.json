@@ -1,0 +1,10 @@
+{
+  "description": "Unlock global study and lifestyle privileges with tiered benefits through a user-friendly portal, offering personalized perks and easy access to educational resources.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
