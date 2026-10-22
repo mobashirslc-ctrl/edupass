@@ -99,7 +99,7 @@ const questions = [
 function Brand({ light = false }: { light?: boolean }) {
   return (
     <button className={`brand ${light ? 'brand-light' : ''}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="EduPass home">
-      <img src="/eduaimers-logo.png" alt="EduAimers" />
+      <img src="https://res.cloudinary.com/ddziennkh/image/upload/v1792673477/WhatsApp_Image_2026-10-22_at_14.19.53_dk41vt.jpg" alt="EduAimers Logo" style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} />
       <span><b>EDUPASS</b><small>VIRTUAL PRIVILEGE</small></span>
     </button>
   )
@@ -218,7 +218,7 @@ function StudentOnboarding({ close, enter, setStudentDetails }: { close: () => v
       })
 
       setStudentDetails({ ...formData, docId: docRef.id, status: 'Pending Verification', cardNumber: 'EP-2026-••••', cardTier: 'Gold', type: 'INITIAL_ONBOARDING' })
-      enter()
+      enter() // Navigates to Plans view
     } catch (err) {
       console.error("Firebase Error: ", err)
       setErrorMsg("Failed to connect to Firebase. Please try again.")
@@ -544,7 +544,7 @@ function Plans({ setModal, setSelectedTier, announcement, activeTiers, isFreeOff
   )
 }
 
-function ModalView({ type, tier, close, startQuiz, studentDetails, setStudentDetails, activeTiers, announcement }: { type: Exclude<Modal, null>; tier: TierName; close: () => void; startQuiz: () => void; studentDetails: any; setStudentDetails: (details: any) => void; activeTiers: any[]; announcement: string }) {
+function ModalView({ type, tier, close, startQuiz, studentDetails, setStudentDetails, activeTiers, announcement, goDashboard }: { type: Exclude<Modal, null>; tier: TierName; close: () => void; startQuiz: () => void; studentDetails: any; setStudentDetails: (details: any) => void; activeTiers: any[]; announcement: string; goDashboard: () => void }) {
   const [bkashSender, setBkashSender] = useState(studentDetails.contact || '')
   const [trxId, setTrxId] = useState('')
   const [payError, setPayError] = useState('')
@@ -587,6 +587,7 @@ function ModalView({ type, tier, close, startQuiz, studentDetails, setStudentDet
 
       alert(`🎉 bKash Payment Request Submitted!\n\nEduPass Team will verify TrxID (${trxId.toUpperCase()}) and unlock your ${tier} Card.`)
       close()
+      goDashboard()
     } catch (err) {
       console.error("Firebase Save Error: ", err)
       setPayError("Error saving payment to database.")
@@ -628,7 +629,10 @@ function ModalView({ type, tier, close, startQuiz, studentDetails, setStudentDet
         ) : (
           <>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <div style={{ fontSize: '26px', fontWeight: '900', color: '#E2136E' }}>b<span style={{ color: '#000' }}>Kash</span></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <img src="https://res.cloudinary.com/ddziennkh/image/upload/v1792673682/bkash-logo-mobile-banking-app-icon-transparent-background-free-png_gr95hl.webp" alt="bKash Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+                <div style={{ fontSize: '24px', fontWeight: '900', color: '#E2136E' }}>b<span style={{ color: '#000' }}>Kash</span></div>
+              </div>
               <span style={{ background: '#E2136E', color: '#fff', fontSize: '10px', fontWeight: 'bold', padding: '3px 8px', borderRadius: '12px' }}>MERCHANT PAY</span>
             </div>
 
@@ -652,7 +656,7 @@ function ModalView({ type, tier, close, startQuiz, studentDetails, setStudentDet
             </div>
 
             <button className="bkash-btn" onClick={handleBkashPayment} disabled={isSubmitting} style={{ background: '#E2136E', color: '#fff', width: '100%', padding: '14px', borderRadius: '10px', fontWeight: 'bold', marginTop: '16px', border: 'none' }}>
-              {isSubmitting ? 'Processing...' : `Confirm bKash Payment (৳${tierPrice.toLocaleString()})`}
+              {isSubmitting ? 'Processing...' : `Confirm bKash Payment (৳{tierPrice.toLocaleString()})`}
             </button>
           </>
         )}
@@ -824,7 +828,6 @@ function Admin({ officeDate, setOfficeDate, announcement, setAnnouncement, exit,
             </div>
           </section>
 
-          {/* DYNAMIC QR CODE LINK UPDATER */}
           <section className="control-card" style={{ background: '#1C2541', padding: '20px', borderRadius: '12px', border: '1px solid #333', display: 'flex', gap: '16px', alignItems: 'center' }}>
             <div style={{ flex: 1 }}>
               <h3 style={{ color: '#D4AF37', margin: '0 0 10px 0' }}>📱 Event QR Code Generator</h3>
@@ -1000,7 +1003,7 @@ export default function App() {
       {view === 'result' && <Result tier={selectedTier} officeDate={officeDate} go={go} studentName={studentDetails.fullName || 'Student'} activeTiers={activeTiers} />}
       {view === 'student_dashboard' && <StudentDashboard studentDetails={studentDetails} go={go} officeDate={officeDate} activeTiers={activeTiers} />}
       {view === 'admin' && <Admin officeDate={officeDate} setOfficeDate={setOfficeDate} announcement={announcement} setAnnouncement={setAnnouncement} exit={() => go('entry')} activeTiers={activeTiers} setActiveTiers={setActiveTiers} isFreeOfferEnabled={isFreeOfferEnabled} setIsFreeOfferEnabled={setIsFreeOfferEnabled} />}
-      {modal && <ModalView type={modal} tier={selectedTier} close={() => setModal(null)} startQuiz={() => { setModal(null); go('quiz') }} studentDetails={studentDetails} setStudentDetails={setStudentDetails} activeTiers={activeTiers} announcement={announcement} />}
+      {modal && <ModalView type={modal} tier={selectedTier} close={() => setModal(null)} startQuiz={() => { setModal(null); go('quiz') }} studentDetails={studentDetails} setStudentDetails={setStudentDetails} activeTiers={activeTiers} announcement={announcement} goDashboard={() => go('student_dashboard')} />}
       {gate === 'student' && <StudentOnboarding close={() => setGate(null)} setStudentDetails={setStudentDetails} enter={() => { setGate(null); go('plans') }} />}
       {gate === 'student_login' && <StudentLogin close={() => setGate(null)} setStudentDetails={setStudentDetails} go={go} />}
       {gate === 'admin' && <AdminAuth close={() => setGate(null)} enter={() => { setGate(null); go('admin') }} />}
