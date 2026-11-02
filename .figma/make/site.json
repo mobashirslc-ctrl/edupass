@@ -1,0 +1,10 @@
+{
+  "description": "Empowers study abroad counselors with training resources, live quizzes, report submissions, and KPI dashboards to enhance team performance and insights.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
